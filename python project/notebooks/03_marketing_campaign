@@ -1,0 +1,347 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Маркетинговая кампания\n",
+        "\n",
+        "**Данные:** публикации из Instagram-аккаунтов конкурентов, собранные вручную из открытых профилей.\n",
+        "\n",
+        "**Что анализируем:** форматы публикаций, темы контента и вовлечённость.\n",
+        "\n",
+        "**Инструменты:** `pandas`, `matplotlib`."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "import os\n",
+        "\n",
+        "os.makedirs('../data/processed', exist_ok=True)\n",
+        "os.makedirs('../figures', exist_ok=True)\n",
+        "\n",
+        "print('Библиотеки загружены.')"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Шаг 1. Загружаем данные"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "posts = pd.read_csv('../data/raw/social_posts.csv')\n",
+        "\n",
+        "print(f'Загружено строк: {len(posts)}')\n",
+        "print(f'Столбцы: {list(posts.columns)}')\n",
+        "print()\n",
+        "print(posts.head())"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Шаг 2. Очищаем данные"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "# Убираем лишние пробелы в текстовых столбцах\n",
+        "posts['competitor'] = posts['competitor'].str.strip()\n",
+        "posts['platform'] = posts['platform'].str.strip()\n",
+        "posts['post_type'] = posts['post_type'].str.strip()\n",
+        "posts['content_theme'] = posts['content_theme'].str.strip()\n",
+        "\n",
+        "# Пустые подписи заменяем на пустую строку\n",
+        "posts['caption'] = posts['caption'].fillna('')\n",
+        "\n",
+        "# Лайки и комментарии переводим в числовой формат\n",
+        "posts['likes'] = pd.to_numeric(posts['likes'], errors='coerce').fillna(0).astype(int)\n",
+        "posts['comments'] = pd.to_numeric(posts['comments'], errors='coerce').fillna(0).astype(int)\n",
+        "\n",
+        "# Считаем вовлечённость как сумму лайков и комментариев\n",
+        "posts['engagement'] = posts['likes'] + posts['comments']\n",
+        "\n",
+        "# Длина текста поста\n",
+        "posts['caption_length'] = posts['caption'].str.len()\n",
+        "\n",
+        "# Удаляем полные дубликаты, если они случайно появились\n",
+        "posts = posts.drop_duplicates()\n",
+        "\n",
+        "print(f'После очистки: {len(posts)} строк')\n",
+        "print()\n",
+        "print(posts.head())"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Шаг 3. Проверяем структуру данных"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "print('Публикаций по конкурентам:')\n",
+        "print(posts['competitor'].value_counts())\n",
+        "print()\n",
+        "\n",
+        "print('Публикаций по форматам:')\n",
+        "print(posts['post_type'].value_counts())\n",
+        "print()\n",
+        "\n",
+        "print('Публикаций по темам:')\n",
+        "print(posts['content_theme'].value_counts())\n",
+        "print()\n",
+        "\n",
+        "print('Пропуски по столбцам:')\n",
+        "print(posts.isna().sum())"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Шаг 4. Сохраняем очищенную таблицу"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "posts.to_csv('../data/processed/social_posts_clean.csv', index=False, encoding='utf-8-sig')\n",
+        "\n",
+        "print(f'Сохранено: data/processed/social_posts_clean.csv ({len(posts)} строк)')"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Шаг 5. Количество публикаций по форматам"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "post_type_counts = posts['post_type'].value_counts().sort_values()\n",
+        "\n",
+        "plt.figure(figsize=(8, 5))\n",
+        "plt.barh(post_type_counts.index, post_type_counts.values)\n",
+        "plt.title('Количество публикаций по форматам')\n",
+        "plt.xlabel('Количество публикаций')\n",
+        "plt.ylabel('Формат публикации')\n",
+        "plt.grid(axis='x', alpha=0.4)\n",
+        "plt.tight_layout()\n",
+        "plt.savefig('../figures/instagram_post_types.png', dpi=100)\n",
+        "plt.show()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Шаг 6. Количество публикаций по темам"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "theme_counts = posts['content_theme'].value_counts().sort_values()\n",
+        "\n",
+        "plt.figure(figsize=(8, 5))\n",
+        "plt.barh(theme_counts.index, theme_counts.values)\n",
+        "plt.title('Количество публикаций по темам')\n",
+        "plt.xlabel('Количество публикаций')\n",
+        "plt.ylabel('Тема публикации')\n",
+        "plt.grid(axis='x', alpha=0.4)\n",
+        "plt.tight_layout()\n",
+        "plt.savefig('../figures/instagram_content_themes.png', dpi=100)\n",
+        "plt.show()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Шаг 7. Средняя вовлечённость по форматам публикаций"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "engagement_by_type = posts.groupby('post_type')['engagement'].mean().sort_values()\n",
+        "\n",
+        "plt.figure(figsize=(8, 5))\n",
+        "plt.barh(engagement_by_type.index, engagement_by_type.values)\n",
+        "plt.title('Средняя вовлечённость по форматам публикаций')\n",
+        "plt.xlabel('Средняя вовлечённость: лайки + комментарии')\n",
+        "plt.ylabel('Формат публикации')\n",
+        "plt.grid(axis='x', alpha=0.4)\n",
+        "plt.tight_layout()\n",
+        "plt.savefig('../figures/instagram_engagement_by_type.png', dpi=100)\n",
+        "plt.show()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Шаг 8. Медианная вовлечённость по темам публикаций"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "engagement_by_theme = posts.groupby('content_theme')['engagement'].median().sort_values()\n",
+        "\n",
+        "plt.figure(figsize=(8, 5))\n",
+        "plt.barh(engagement_by_theme.index, engagement_by_theme.values)\n",
+        "plt.title('Медианная вовлечённость по темам публикаций')\n",
+        "plt.xlabel('Медианная вовлечённость: лайки + комментарии')\n",
+        "plt.ylabel('Тема публикации')\n",
+        "plt.grid(axis='x', alpha=0.4)\n",
+        "plt.tight_layout()\n",
+        "plt.savefig('../figures/instagram_engagement_by_theme.png', dpi=100)\n",
+        "plt.show()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Шаг 9. Медианная вовлечённость по конкурентам"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "engagement_by_competitor = posts.groupby('competitor')['engagement'].median().sort_values()\n",
+        "\n",
+        "plt.figure(figsize=(10, 5))\n",
+        "plt.barh(engagement_by_competitor.index, engagement_by_competitor.values)\n",
+        "plt.title('Медианная вовлечённость по конкурентам')\n",
+        "plt.xlabel('Медианная вовлечённость: лайки + комментарии')\n",
+        "plt.ylabel('Конкурент')\n",
+        "plt.grid(axis='x', alpha=0.4)\n",
+        "plt.tight_layout()\n",
+        "plt.savefig('../figures/instagram_engagement_by_competitor.png', dpi=100)\n",
+        "plt.show()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Шаг 10. Сводные таблицы по форматам и темам"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "summary_by_type = posts.groupby('post_type').agg(\n",
+        "    posts_count=('post_type', 'count'),\n",
+        "    mean_likes=('likes', 'mean'),\n",
+        "    mean_comments=('comments', 'mean'),\n",
+        "    mean_engagement=('engagement', 'mean'),\n",
+        "    median_engagement=('engagement', 'median')\n",
+        ").sort_values('median_engagement', ascending=False)\n",
+        "\n",
+        "summary_by_theme = posts.groupby('content_theme').agg(\n",
+        "    posts_count=('content_theme', 'count'),\n",
+        "    mean_likes=('likes', 'mean'),\n",
+        "    mean_comments=('comments', 'mean'),\n",
+        "    mean_engagement=('engagement', 'mean'),\n",
+        "    median_engagement=('engagement', 'median')\n",
+        ").sort_values('median_engagement', ascending=False)\n",
+        "\n",
+        "print('Сводка по форматам:')\n",
+        "print(summary_by_type)\n",
+        "print()\n",
+        "\n",
+        "print('Сводка по темам:')\n",
+        "print(summary_by_theme)\n",
+        "\n",
+        "summary_by_type.to_csv('../data/processed/instagram_summary_by_type.csv', encoding='utf-8-sig')\n",
+        "summary_by_theme.to_csv('../data/processed/instagram_summary_by_theme.csv', encoding='utf-8-sig')\n",
+        "\n",
+        "print()\n",
+        "print('Сохранено: data/processed/instagram_summary_by_type.csv')\n",
+        "print('Сохранено: data/processed/instagram_summary_by_theme.csv')"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Предварительный вывод\n",
+        "\n",
+        "В этой части сравниваем Instagram-публикации конкурентов по форматам и темам. В качестве метрики вовлечённости используется сумма лайков и комментариев: `engagement = likes + comments`.\n",
+        "\n",
+        "Анализ показывает, какие форматы и темы дают больше видимых реакций аудитории. Эти результаты дальше можно использовать для выбора механик маркетинговой кампании."
+      ]
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.9.0"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
