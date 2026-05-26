@@ -1,0 +1,5 @@
+position,source_name,source_url,metric,salary_rub,period,notes,employer_total_cost_rub
+Бариста,DreamJob,https://dreamjob.ru/salary/barista/city-moskva,average,60000,2026,Средняя зарплата бариста в Москве; диапазон чаще всего 40000-80000 руб.,78120.0
+Кассир,Rabota.ru,https://www.rabota.ru/career/catalogue/commerce/cashier/,average,61000,2026,Средняя зарплата кассира по данным карьерной страницы Rabota.ru,79422.0
+Администратор кафе,КП Образование,https://www.kp.ru/edu/rabota/zarplata-administratora-v-moskve-i-rossii/,average,50000,2026,"В статье указано, что администратор кафе в Москве получает около 50000 руб.",65100.0
+Администратор ресторана,Rabix,https://rabix.ru/catalog/admin-personal/administrator/administrator-restorana/,average,67774,2026,Средняя зарплата администратора ресторана в Москве по странице вакансий Rabix,88241.748
