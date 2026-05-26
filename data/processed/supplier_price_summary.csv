@@ -1,9 +1,0 @@
-supplier_name,category,products_with_price,min_price_rub,median_price_rub,max_price_rub
-ShopBubbleTea,Джус-боллы,9,200.0,800.0,800.0
-ShopBubbleTea,Желе,10,220.0,1500.0,1500.0
-ShopBubbleTea,Сиропы,24,500.0,1564.0,2000.0
-ShopBubbleTea,Тапиока,26,328.0,1500.0,1500.0
-ShopBubbleTea,Упаковка,9,3.0,3.0,2800.0
-ShopBubbleTea,Чай,13,240.0,650.0,1880.0
-WonderfulFoods,Сиропы,4,1350.0,1440.0,2070.0
-WonderfulFoods,Тапиока,4,450.0,1090.0,1090.0

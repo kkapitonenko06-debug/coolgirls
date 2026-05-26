@@ -1,9 +1,0 @@
-ingredient_key,supplier_name,product_name,source_url,pack_amount,pack_unit,pack_price_rub,source_type,notes
-tea,ShopBubbleTea,"Чай Зеленый 0,5 кг",https://www.shopbubbletea.ru/index.php/component/k2/itemlist/category/27-tapioka-bubble-tea-babl-tea,500,g,650,parsed_catalog,"Категория Чай и Кофе; цена товара в каталоге"
-milk,Price.ru,"ЭкоНива молоко ультрапастеризованное 3.2% 1 л",https://price.ru/moloko-i-slivki/ekoniva-moloko-ultrapasterizovannoe-3.2-1l/,1000,ml,119,market_price,"Рыночная цена молока в интернет-магазинах Москвы"
-tapioca,ShopBubbleTea,"Тапиока Чёрная Классическая 3 кг",https://www.shopbubbletea.ru/index.php/prajs/item/142-bubble-tea-granuly-tapioka,3000,g,1500,parsed_product,"Цена карточки товара"
-syrup,ShopBubbleTea,"Сироп Манго 2,5 кг",https://www.shopbubbletea.ru/index.php/prajs/itemlist/category/24-siropy-dlya-prigotovleniya-bubble-tea-babl-tea,2500,g,1564,parsed_catalog,"Типовая цена сиропов Possmei 2,5 кг в каталоге"
-cup,ShopBubbleTea,"Стакан мягкий пластиковый прозрачный без рисунка 500 мл",https://shopbubbletea.ru/index.php/k2-users/kategorii/itemlist/category/57-shariki-s-sokom-popping-boba-poping-boba-juice-balls-dzhus-bolly-v-moskve,1,pcs,5,parsed_catalog,"Цена за 1 стакан 500 мл"
-lid,ShopBubbleTea,"Купольная крышка под плотные стаканы 500 мл. и 650 мл.",https://www.shopbubbletea.ru/index.php/franshiza/item/669-kupolnaya-kryshka-pod-plotnye-stakany-500-ml-i-650-ml,1,pcs,5,parsed_product,"Цена за 1 крышку"
-straw,ShopBubbleTea,"Трубочка чёрная 210x11 мм. с заостренным окончанием",https://shopbubbletea.ru/index.php/prajs/itemlist/category/101-posuda-i-aksessuary,1,pcs,3,parsed_catalog,"Цена за 1 широкую трубочку"
-
